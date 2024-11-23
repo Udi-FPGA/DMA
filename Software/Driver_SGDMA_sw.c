@@ -19,6 +19,7 @@
 
 int main (void)
 {
+
 	int Value;
 
 	u8 *Packet = (u8 *)TX_BUFF_BASE;
@@ -32,16 +33,16 @@ int main (void)
 
 	int status;
 	XAxiDma_Config *Config;
-	XAxiDma InstancePtr;
+	XAxiDma AxiSGDma;
 
 	Config = XAxiDma_LookupConfig(XPAR_AXI_DMA_0_DEVICE_ID);
-	status = XAxiDma_CfgInitialize(&InstancePtr, Config);
+	status = XAxiDma_CfgInitialize(&AxiSGDma, Config);
 
 	XAxiDma_BdRing *TxBDringptr;
 	XAxiDma_BdRing *RxBDringptr;
 
-	TxBDringptr = XAxiDma_GetTxRing(&InstancePtr);
-	RxBDringptr = XAxiDma_GetRxRing(&InstancePtr);
+	TxBDringptr = XAxiDma_GetTxRing(&AxiSGDma);
+	RxBDringptr = XAxiDma_GetRxRing(&AxiSGDma);
 
 	status = XAxiDma_BdRingCreate(TxBDringptr, TX_BD_SPACE_BASE,
 			TX_BD_SPACE_BASE, XAXIDMA_BD_MINIMUM_ALIGNMENT, BD_NUM);
@@ -79,16 +80,13 @@ int main (void)
 	status = XAxiDma_BdRingStart(RxBDringptr);
 	status = XAxiDma_BdRingStart(TxBDringptr);
 
-	while ((XAxiDma_Busy(&InstancePtr, XAXIDMA_DMA_TO_DEVICE))||
-			(XAxiDma_Busy(&InstancePtr, XAXIDMA_DEVICE_TO_DMA)));
+	while ((XAxiDma_Busy(&AxiSGDma, XAXIDMA_DMA_TO_DEVICE))||
+			(XAxiDma_Busy(&AxiSGDma, XAXIDMA_DEVICE_TO_DMA)));
 
 	Xil_DCacheInvalidateRange(TX_BD_SPACE_BASE, XAXIDMA_BD_MINIMUM_ALIGNMENT*BD_NUM);
 	Xil_DCacheInvalidateRange(RX_BD_SPACE_BASE, XAXIDMA_BD_MINIMUM_ALIGNMENT*BD_NUM);
 	Xil_DCacheInvalidateRange(TX_BUFF_BASE, PKT_LENGTH*BD_NUM);
 	Xil_DCacheInvalidateRange(RX_BUFF_BASE, PKT_LENGTH*BD_NUM);
-
-
-
 
 	return XST_SUCCESS;
 }

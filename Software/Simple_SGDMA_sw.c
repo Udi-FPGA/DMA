@@ -103,10 +103,10 @@ int main (void)
 	    Data1 = DMA[0x34/4];
     }
 
-	Xil_DCacheInvalidateRange((UINTPTR)TxBDprt, BD_SIZE*BD_NUM);
-	Xil_DCacheInvalidateRange((UINTPTR)RxBDprt, BD_SIZE*BD_NUM);
-	Xil_DCacheInvalidateRange((UINTPTR)TxBbuffprt, PKT_LENGTH*BD_NUM);
-	Xil_DCacheInvalidateRange((UINTPTR)RxBbuffprt, PKT_LENGTH*BD_NUM);
+	Xil_DCacheInvalidateRange((UINTPTR)TX_BD_SPACE_BASE, BD_SIZE*BD_NUM);
+	Xil_DCacheInvalidateRange((UINTPTR)RX_BD_SPACE_BASE, BD_SIZE*BD_NUM);
+	Xil_DCacheInvalidateRange((UINTPTR)TX_BUFF_BASE	, PKT_LENGTH*BD_NUM);
+	Xil_DCacheInvalidateRange((UINTPTR)RX_BUFF_BASE	, PKT_LENGTH*BD_NUM);
 
 	return XST_SUCCESS;
 }
